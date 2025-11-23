@@ -3,5 +3,8 @@
 
 int main(){
 
+    char *textoCriptografado = geraArqCripto();
+    printf("%s\n", textoCriptografado);
+
     return 0;
 }

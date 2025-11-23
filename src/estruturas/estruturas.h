@@ -1,7 +1,8 @@
 
 
 /* Menu/Arquivo */
+char *geraArqCripto();
 
-/* Criptografia */
+/* Criptoanálise */
 
 /* Casamento exato e aproximado */
