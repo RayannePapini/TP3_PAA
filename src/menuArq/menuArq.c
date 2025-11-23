@@ -96,3 +96,43 @@ char *geraArqCripto(){
     }
     return txtCriptografado;
 }
+
+void menu(char *textoCriptografado){
+    while(1){
+        printf("\nDigite o número corresponde ao que deseja:\n");
+        printf("1. Apresentar o estado atual da criptoanalise\n");
+        printf("2. Fazer um chute baseado analise de frequencia no texto criptografado\n");
+        printf("3. Realizar casamento exato de caracteres no texto criptografado\n");
+        printf("4. Realizar casamento aproximado de caracteres no texto parcialmente decifrado\n");
+        printf("5. Alterar chave de criptografia\n");
+        printf("6. Exportar resultado e encerrar o programa\n");
+        int opcao=0;
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            /* code */
+            break;
+        case 2:
+            
+            break;
+        case 3:
+            
+            break;
+        case 4:
+            
+            break;
+        case 5:
+            
+            break;
+        case 6:
+            
+            break;        
+        default:
+            continue;
+        }
+
+    }
+    
+}

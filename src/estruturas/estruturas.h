@@ -2,6 +2,7 @@
 
 /* Menu/Arquivo */
 char *geraArqCripto();
+void menu(char *textoCriptografado);
 
 /* Criptoanálise */
 
