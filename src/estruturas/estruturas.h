@@ -7,6 +7,9 @@ void menu(char *textoCriptografado);
 /* Criptoanálise */
 
 // Alteração de chave
-void altChave();
+void altChave(char *textoCriptografado);
+
+// Finalização/Exportação
+void export();
 
 /* Casamento exato e aproximado */
