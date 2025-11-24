@@ -111,7 +111,7 @@ void menu(char *textoCriptografado){
 
         switch (opcao){
         case 1:
-        
+
             break;
         case 2:
             
@@ -131,7 +131,9 @@ void menu(char *textoCriptografado){
         default:
             continue;
         }
-
+        if(opcao == 6){
+            break;
+        }
     }
     
 }
