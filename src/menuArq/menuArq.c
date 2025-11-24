@@ -107,7 +107,9 @@ void menu(char *textoCriptografado){
         printf("5. Alterar chave de criptografia\n");
         printf("6. Exportar resultado e encerrar o programa\n");
         int opcao=0;
-        scanf("%d", &opcao);
+        // Limpa o buffer de entrada antes de ler a opção
+        getchar();
+        scanf(" %d", &opcao);
 
         switch (opcao){
             case 1:

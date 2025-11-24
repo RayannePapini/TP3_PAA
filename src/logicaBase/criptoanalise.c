@@ -9,9 +9,15 @@ void altChave(char *textoCriptografado){
     printf("\nDigite nesta ordem separadoo por espaço:\n");
     printf("Letra original -> Letra mapeada\n");
     printf("Exemplo: A S\n");
-    scanf("> %c %c", &original, &mapeada);
+    printf("> ");
+    getchar(); // limpando buffer
+    scanf("%c %c", &original, &mapeada);
+    printf("\n");
     original = toupper(original);
     mapeada = toupper(mapeada);
+
+    printf("Antes:\n");
+    printf("%s\n", textoCriptografado);
 
     // atualizando os valores no texto criptografado
     int tamTxt = strlen(textoCriptografado);
@@ -22,6 +28,9 @@ void altChave(char *textoCriptografado){
     }
 
     printf("Registrado: %c -> %c!\n", original, mapeada);
+
+    printf("Depois:\n");
+    printf("%s\n", textoCriptografado);
 }
 
 void export(char *textoCriptografado){
@@ -62,4 +71,7 @@ void export(char *textoCriptografado){
             continue;
         }
     }
+
+    printf("Resultado esperado no arquivo:\n");
+    printf("%s\n", textoCriptografado);
 }
