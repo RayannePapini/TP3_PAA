@@ -126,7 +126,7 @@ void menu(char *textoCriptografado){
                 altChave(textoCriptografado);
                 break;
             case 6:
-                export();
+                export(textoCriptografado);
                 break;        
             default:
                 continue;

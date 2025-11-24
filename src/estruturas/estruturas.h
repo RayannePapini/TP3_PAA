@@ -10,6 +10,6 @@ void menu(char *textoCriptografado);
 void altChave(char *textoCriptografado);
 
 // Finalização/Exportação
-void export();
+void export(char *textoCriptografado);
 
 /* Casamento exato e aproximado */
