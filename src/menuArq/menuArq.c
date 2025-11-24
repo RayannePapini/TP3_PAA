@@ -123,7 +123,7 @@ void menu(char *textoCriptografado){
                 
                 break;
             case 5:
-                
+                altChave();
                 break;
             case 6:
                 
