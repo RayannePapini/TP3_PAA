@@ -109,10 +109,9 @@ void menu(char *textoCriptografado){
         int opcao=0;
         scanf("%d", &opcao);
 
-        switch (opcao)
-        {
+        switch (opcao){
         case 1:
-            /* code */
+        
             break;
         case 2:
             
