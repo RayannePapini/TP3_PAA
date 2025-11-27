@@ -10,7 +10,7 @@ void alteraChave(char chave[ALFABETO]) {
     char original, mapeada;
 
     printf("\nInforme a letra original (Plaintext) e a letra criptografada (Ciphertext) para mapear (Ex: AS): ");
-    
+
     if (scanf("%2s", entradaStr) != 1 || strlen(entradaStr) != 2 || !isalpha(entradaStr[0]) || !isalpha(entradaStr[1])) {
         printf("Formato invalido. Insira duas letras (Original -> Criptografada).\n");
         int c; 
@@ -20,9 +20,9 @@ void alteraChave(char chave[ALFABETO]) {
 
     original = toupper(entradaStr[0]);
     mapeada = toupper(entradaStr[1]);
-    
+
     int indiceCT = mapeada - 'A';
-    
+
     if (indiceCT >= 0 && indiceCT < ALFABETO) {
         for (int i = 0; i < ALFABETO; i++) {
             if (chave[i] == original && i != indiceCT) {
@@ -30,7 +30,7 @@ void alteraChave(char chave[ALFABETO]) {
                 return;
             }
         }
-        
+
         chave[indiceCT] = original;
         printf("Registrado: %c (PT) -> %c (CT).\n", original, mapeada);
     } else {
@@ -43,7 +43,7 @@ char *criptografia(char *texto){
                  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
     char cripto[26];
     int X = 3;
-    
+
     for(int i=0; i<26; i++){
         int calculoCifDesc = (i+X)%26;
         cripto[i] = alph[calculoCifDesc];
@@ -108,7 +108,7 @@ char *geraArqCripto(){
             txtUpper[pos] = (char) toupper(ch);
             pos++;
         }
-        
+
         txtUpper[pos] = '\0';
 
         txtCriptografado = criptografia(txtUpper);
@@ -116,7 +116,7 @@ char *geraArqCripto(){
         fclose(file);
 
         free(txtUpper);
-        
+
         break;
     }
     return txtCriptografado;
@@ -135,7 +135,7 @@ void menu(char *textoCriptografado){
         printf("5. Alterar chave de criptografia\n");
         printf("6. Exportar resultado e encerrar o programa\n");
         int opcao=0;
-        
+
         if (scanf("%d", &opcao) != 1) {
             printf("\nOpcao invalida. Por favor, insira um numero.\n");
             int c;
@@ -154,7 +154,7 @@ void menu(char *textoCriptografado){
                 analiseFrequencia(textoCriptografado, chave_decifracao);
                 break;
             case 3:
-                printf("\nOpcao 3: Casamento Exato (a ser implementado)\n");
+                realizarCasamentoExato(textoCriptografado, chave_decifracao);
                 break;
             case 4:
                 printf("\nOpcao 4: Casamento Aproximado (a ser implementado)\n");
@@ -169,10 +169,10 @@ void menu(char *textoCriptografado){
                 printf("\nOpcao invalida. Tente novamente.\n");
                 continue;
         }
-        
+
         if(opcao == 6){
             break;
         }
     }
-    
+
 }
