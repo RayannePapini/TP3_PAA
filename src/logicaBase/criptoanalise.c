@@ -3,176 +3,155 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h> 
 
-void alteraChave(char chave[ALFABETO]) { 
-    char entradaStr[3];
-    char original, mapeada;
+const char ORDEM_PT[] = "AEOSRINDMUTCLPVQGHBFZJXKYW"; 
 
-    printf("\nInforme a letra original (Plaintext) e a letra criptografada (Ciphertext) para mapear (Ex: AS): ");
+typedef struct {
+    char letra;
+    int contagem;
+    double frequencia;
+} EntradaFrequencia;
+
+int comparaEntradasFrequencia(const void *a, const void *b) {
+    EntradaFrequencia *entradaA = (EntradaFrequencia *)a;
+    EntradaFrequencia *entradaB = (EntradaFrequencia *)b;
     
-    if (scanf("%2s", entradaStr) != 1 || strlen(entradaStr) != 2 || !isalpha(entradaStr[0]) || !isalpha(entradaStr[1])) {
-        printf("Formato invalido. Insira duas letras (Original -> Criptografada).\n");
-        int c; 
-        while ((c = getchar()) != '\n' && c != EOF);
+    if (entradaB->contagem != entradaA->contagem) {
+        return entradaB->contagem - entradaA->contagem;
+    }
+    return entradaA->letra - entradaB->letra;
+}
+
+void inicializaChave(char chave[ALFABETO]) {
+    for (int i = 0; i < ALFABETO; i++) {
+        chave[i] = DESCONHECIDO; 
+    }
+}
+
+void decifraTexto(const char *texto_criptografado, const char *chave, char *texto_decifrado) {
+    int tamanho = strlen(texto_criptografado);
+    for (int i = 0; i < tamanho; i++) {
+        char c = texto_criptografado[i];
+        if (isupper(c)) {
+            int indice = c - 'A';
+            if (chave[indice] != DESCONHECIDO) {
+                texto_decifrado[i] = chave[indice];
+            } else {
+                texto_decifrado[i] = c;
+            }
+        } else {
+            texto_decifrado[i] = c; 
+        }
+    }
+    texto_decifrado[tamanho] = '\0';
+}
+
+void exibeEstado(const char *texto_criptografado, const char *chave) {
+    int tamanho = strlen(texto_criptografado);
+    char *texto_decifrado = (char*) malloc(tamanho + 1);
+    if (!texto_decifrado) {
+        printf("Erro de alocacao de memoria.\n");
         return;
     }
 
-    original = toupper(entradaStr[0]);
-    mapeada = toupper(entradaStr[1]);
+    decifraTexto(texto_criptografado, chave, texto_decifrado);
+
+    printf("\nTexto criptografado\n");
+    printf("%s\n", texto_criptografado);
+
+    printf("\nChave\n");
+    printf("CT: ");
+    for (int i = 0; i < ALFABETO; i++) {
+        printf("%c", 'A' + i);
+    }
+    printf("\n");
+    printf("PT: ");
+    for (int i = 0; i < ALFABETO; i++) {
+        printf("%c", chave[i]);
+    }
+    printf("\n");
+
+    printf("\nTexto parcialmente decifrado\n");
+    printf("%s\n", texto_decifrado);
     
-    int indiceCT = mapeada - 'A';
-    
-    if (indiceCT >= 0 && indiceCT < ALFABETO) {
-        for (int i = 0; i < ALFABETO; i++) {
-            if (chave[i] == original && i != indiceCT) {
-                printf("ERRO: A letra '%c' (Plaintext) ja esta mapeada para '%c' (Ciphertext).\n", original, 'A' + i);
-                return;
-            }
+    printf("    ");
+    for (int i = 0; i < tamanho; i++) {
+        char c = texto_criptografado[i];
+        if (isupper(c) && chave[c - 'A'] != DESCONHECIDO) {
+            printf("_");
+        } else if (isspace(c)) {
+             printf(" ");
+        } else {
+            printf(" ");
         }
-        
-        chave[indiceCT] = original;
-        printf("Registrado: %c (PT) -> %c (CT).\n", original, mapeada);
+    }
+    printf("\n");
+    
+    free(texto_decifrado);
+}
+
+void analiseFrequencia(const char *texto_criptografado, char chave[ALFABETO]) {
+    int contagens[ALFABETO] = {0};
+    int total_letras = 0;
+    
+    for (int i = 0; texto_criptografado[i] != '\0'; i++) {
+        char c = texto_criptografado[i];
+        if (isupper(c)) {
+            contagens[c - 'A']++;
+            total_letras++;
+        }
+    }
+
+    if (total_letras == 0) {
+        printf("\nO texto criptografado nao contem letras para analise.\n");
+        return;
+    }
+
+    EntradaFrequencia entradas[ALFABETO];
+    for (int i = 0; i < ALFABETO; i++) {
+        entradas[i].letra = 'A' + i;
+        entradas[i].contagem = contagens[i];
+        entradas[i].frequencia = (double)contagens[i] / total_letras * 100.0;
+    }
+
+    qsort(entradas, ALFABETO, sizeof(EntradaFrequencia), comparaEntradasFrequencia);
+
+    printf("\nAnalise de Frequencia do Texto Criptografado\n");
+    printf("Total de letras: %d\n", total_letras);
+    printf("----------------------------------------\n");
+    printf("| Letra | Cont. | Freq.  |\n");
+    printf("|-------|-------|--------|\n");
+    for (int i = 0; i < ALFABETO; i++) {
+        if (entradas[i].contagem > 0) {
+            printf("|   %c   |  %4d | %5.2f%% |\n", entradas[i].letra, entradas[i].contagem, entradas[i].frequencia);
+        }
+    }
+    printf("----------------------------------------\n");
+
+    printf("\nTentativa de 'Chute' Baseada em Frequencia\n");
+    printf("A heuristica mais simples e: as letras CT mais frequentes mapeiam para as letras PT mais frequentes.\n");
+    printf("Ordem PT: %s\n", ORDEM_PT);
+
+    int mapeamentos_feitos = 0;
+    
+    printf("\nMapeamento Sugerido:\n");
+    for (int i = 0; i < ALFABETO && i < (int)strlen(ORDEM_PT); i++) {
+        char char_ct = entradas[i].letra;
+        if (entradas[i].contagem > 0 && chave[char_ct - 'A'] == DESCONHECIDO) {
+            
+            char char_pt = ORDEM_PT[i];
+            
+            chave[char_ct - 'A'] = char_pt;
+            
+            printf("  %c (CT: %.2f%%) -> %c (PT)\n", char_ct, entradas[i].frequencia, char_pt);
+            mapeamentos_feitos++;
+        }
+    }
+    
+    if (mapeamentos_feitos > 0) {
+        printf("\nChave de Decifracao ATUALIZADA apos Chute ---\n");
+        exibeEstado(texto_criptografado, chave);
     } else {
-        printf("Letras invalidas ou fora do alfabeto.\n");
+        printf("\nNenhum novo mapeamento foi sugerido ou todas as letras ja foram mapeadas.\n");
     }
-}
-
-char *criptografia(char *texto){
-    char alph[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    char cripto[26];
-    int X = 3;
-    
-    for(int i=0; i<26; i++){
-        int calculoCifDesc = (i+X)%26;
-        cripto[i] = alph[calculoCifDesc];
-    }
-
-    int tamTxt = strlen(texto);
-    char *resultCripto = (char*) malloc(tamTxt + 1);
-    int posCripto = 0;
-
-    for(int i=0; i<tamTxt; i++){
-        int encontrado = 0;
-
-        for(int j=0; j<26; j++){
-            if(texto[i] == alph[j]){
-                resultCripto[posCripto] = cripto[j];
-                posCripto++;
-                encontrado = 1;
-                break;
-            }
-        }
-
-        if(encontrado == 0){
-            resultCripto[posCripto] = texto[i];
-            posCripto++;
-        }
-    }
-
-    resultCripto[posCripto] = '\0';
-
-    return resultCripto;
-}
-
-char *geraArqCripto(){
-    char *txtUpper = NULL;
-    char *txtCriptografado = NULL;
-
-    while(1){
-        printf("\nDigite o nome do arquivo de entrada para criptografia(sem extensao):\n");
-        printf("O arquivo criptografado gerado sera usado na criptoanalise!\n");
-        char nomeArq[100];
-        int c_temp; 
-        while ((c_temp = getchar()) != '\n' && c_temp != EOF);
-        scanf("%s", nomeArq);
-        char caminhoArq[150];
-        sprintf(caminhoArq, "testes/%s.txt", nomeArq);
-
-        FILE *file = fopen(caminhoArq, "r");
-        if(file == NULL){
-            printf("Erro ao abrir o arquivo! Tente novamente\n");
-            continue;
-        }
-
-        fseek(file, 0, SEEK_END);
-        long fileSize = ftell(file);
-        fseek(file, 0, SEEK_SET);
-
-        txtUpper = (char*) malloc(fileSize + 1);
-
-        int ch;
-        int pos=0;
-        while ((ch = fgetc(file)) != EOF) {
-            txtUpper[pos] = (char) toupper(ch);
-            pos++;
-        }
-        
-        txtUpper[pos] = '\0';
-
-        txtCriptografado = criptografia(txtUpper);
-
-        fclose(file);
-
-        free(txtUpper);
-        
-        break;
-    }
-    return txtCriptografado;
-}
-
-void menu(char *textoCriptografado){
-    char chave_decifracao[ALFABETO];
-    inicializaChave(chave_decifracao);
-
-    while(1){
-        printf("\nDigite o numero corresponde ao que deseja:\n");
-        printf("1. Apresentar o estado atual da criptoanalise\n");
-        printf("2. Fazer um chute baseado analise de frequencia no texto criptografado\n");
-        printf("3. Realizar casamento exato de caracteres no texto criptografado\n");
-        printf("4. Realizar casamento aproximado de caracteres no texto parcialmente decifrado\n");
-        printf("5. Alterar chave de criptografia\n");
-        printf("6. Exportar resultado e encerrar o programa\n");
-        int opcao=0;
-        
-        if (scanf("%d", &opcao) != 1) {
-            printf("\nOpcao invalida. Por favor, insira um numero.\n");
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF) { }
-            continue;
-        }
-
-        int c; 
-        while ((c = getchar()) != '\n' && c != EOF);
-
-        switch (opcao){
-            case 1:
-                exibeEstado(textoCriptografado, chave_decifracao);
-                break;
-            case 2:
-                analiseFrequencia(textoCriptografado, chave_decifracao);
-                break;
-            case 3:
-                printf("\nOpcao 3: Casamento Exato (a ser implementado)\n");
-                break;
-            case 4:
-                printf("\nOpcao 4: Casamento Aproximado (a ser implementado)\n");
-                break;
-            case 5:
-                alteraChave(chave_decifracao);
-                break;
-            case 6:
-                printf("\nEncerrando o programa e exportando o resultado (a ser implementado)\n");
-                break;        
-            default:
-                printf("\nOpcao invalida. Tente novamente.\n");
-                continue;
-        }
-        
-        if(opcao == 6){
-            break;
-        }
-    }
-    
 }
