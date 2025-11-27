@@ -16,7 +16,8 @@ void inicializaChave(char chave[ALFABETO]);
 void decifraTexto(const char *texto_criptografado, const char *chave, char *texto_decifrado);
 void exibeEstado(const char *texto_criptografado, const char *chave);
 void analiseFrequencia(const char *texto_criptografado, char chave[ALFABETO]);
+void realizarCasamentoExato(const char *textoCriptografado, char chave[ALFABETO]);
 
 /* Casamento exato e aproximado */
 
-#endif 
+#endif
