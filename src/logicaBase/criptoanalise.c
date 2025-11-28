@@ -75,12 +75,12 @@ void exibeEstado(const char *cript, const char *chave) {
     printf("\n=== Estado Atual ===\n");
     printf("Texto Criptografado:\n%s\n", cript);
 
-    printf("\nChave Atual:\n");
+    printf("\n=== Chave Atual ===\n");
     printf("CT: ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
     printf("PT: ");
     for (int i = 0; i < ALFABETO; i++) printf("%c", chave[i]);
 
-    printf("\n\nTexto Parcialmente Decifrado:\n");
+    printf("\n\n=== Texto Parcialmente Decifrado ===\n");
 
     int inicio = 0;
     for (int i = 0; i <= n; i++) {
