@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ALFABETO 26
-#define DESCONHECIDO '_' 
+#define ALFABETO 26 //letras de A-Z
+#define DESCONHECIDO '_' //caracteres desconhecidos
 
 #define COR_VERDE "\033[0;32m"
 #define COR_RESET "\033[0m"
@@ -13,30 +13,25 @@
 
 extern int SHIFT_GLOBAL;
 
-typedef struct {
-    char letra;
-    int contagem;
-    double frequencia;
-} EntradaFrequencia;
-
-/* Menu/Arquivo */
+/*Funções para a criptografia*/
 char *criptografia(char *texto);
 char *geraArqCripto();
-void menu(char *textoCriptografado);
-void alteraChave(char chave[ALFABETO]);
+void criptografaCorpus12(int shift);
 
-void inicializaChave(char chave[ALFABETO]);
+/*Funções para criptoanalise*/
 void decifraTexto(const char *texto_criptografado, const char *chave, char *texto_decifrado);
-void exibeEstado(const char *texto_criptografado, const char *chave);
-void analiseFrequencia(const char *texto_criptografado); 
+void analiseFrequencia(const char *texto_criptografado);
 void analiseCorpus12();
-
-void altChave(char *textoCriptografado); 
-
-void export(const char *chave); 
-
 void realizarCasamentoExato(const char *textoCriptografado);
 
-void criptografaCorpus12(int shift);
+/*Funções para mecher com a chave*/
+void inicializaChave(char chave[ALFABETO]);
+void alteraChave(char chave[ALFABETO]);
+void altChave(char *textoCriptografado);
+void export(const char *chave);
+
+/*Funções da interface*/
+void menu(char *textoCriptografado);
+void exibeEstado(const char *texto_criptografado, const char *chave);
 
 #endif
