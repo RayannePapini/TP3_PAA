@@ -45,5 +45,5 @@ void realizarCasamentoExato(const char *textoCriptografado) {
         return;
     }
     printf("\nOcorrencias: %d\n", qtd);
-    printf("Use a Opção 5 (Alterar chave de criptografia) para aplicar suas suspeitas de mapeamento.\n");
+    printf("Use a Opcao 5 (Alterar chave de criptografia) para aplicar suas suspeitas de mapeamento.\n");
 }
