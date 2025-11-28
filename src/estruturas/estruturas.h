@@ -13,6 +13,13 @@
 
 extern int SHIFT_GLOBAL;
 
+typedef struct {
+    char letra;
+    int contagem;
+    double frequencia;
+} EntradaFrequencia;
+
+/* Menu/Arquivo */
 char *criptografia(char *texto);
 char *geraArqCripto();
 void menu(char *textoCriptografado);
