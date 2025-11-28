@@ -7,10 +7,6 @@
 #define ALFABETO 26 //letras de A-Z
 #define DESCONHECIDO '_' //caracteres desconhecidos
 
-#define COR_VERDE "\033[0;32m"
-#define COR_RESET "\033[0m"
-#define COR_VERMELHO "\033[0;31m"
-
 extern int SHIFT_GLOBAL;
 
 /*Funções para a criptografia*/
@@ -35,3 +31,4 @@ void menu(char *textoCriptografado);
 void exibeEstado(const char *texto_criptografado, const char *chave);
 
 #endif
+
