@@ -11,13 +11,7 @@ typedef struct {
 } FreqPadrao;
 
 // Tabela de frequência padrão das letras na língua portuguesa (baseada na Wikipedia)
-const FreqPadrao TABELA_WIKI[ALFABETO] = {
-    {'A',14.63},{'E',12.57},{'O',10.73},{'S',7.81},{'R',6.53},
-    {'I',6.18},{'N',5.05},{'D',4.99},{'M',4.74},{'U',4.63},
-    {'T',4.34},{'C',3.88},{'L',2.78},{'P',2.52},{'V',1.67},
-    {'G',1.30},{'H',1.28},{'Q',1.20},{'B',1.04},{'F',1.02},
-    {'Z',0.47},{'J',0.40},{'X',0.21},{'K',0.02},{'W',0.01},
-    {'Y',0.01}
+const FreqPadrao TABELA_WIKI[ALFABETO] = {{'A',14.63},{'E',12.57},{'O',10.73},{'S',7.81},{'R',6.53},{'I',6.18},{'N',5.05},{'D',4.99},{'M',4.74},{'U',4.63},{'T',4.34},{'C',3.88},{'L',2.78},{'P',2.52},{'V',1.67},{'G',1.30},{'H',1.28},{'Q',1.20},{'B',1.04},{'F',1.02},{'Z',0.47},{'J',0.40},{'X',0.21},{'K',0.02},{'W',0.01},{'Y',0.01}
 };
 
 // Tipo de estrutura para armazenar a frequência de letras do texto cifrado
@@ -36,7 +30,9 @@ int comparaEntradasFrequencia(const void *a, const void *b) {
 
 // Inicializa a chave de decifração com o valor DESCONHECIDO para todas as letras
 void inicializaChave(char chave[ALFABETO]) {
-    for (int i = 0; i < ALFABETO; i++) chave[i] = DESCONHECIDO;
+    for (int i = 0; i < ALFABETO; i++){
+        chave[i] = DESCONHECIDO;
+    } 
 }
 
 // Decifra o texto criptografado usando a chave atual.
@@ -56,30 +52,66 @@ void decifraTexto(const char *cript, const char *chave, char *decifrado) {
     decifrado[n] = '\0'; 
 }
 
-// Exibe o estado atual da criptanálise
 void exibeEstado(const char *cript, const char *chave) {
-    printf("\nEstado Atual\n");
+    int n = (int)strlen(cript);
+
+    // Cria buffer do texto parcialmente decifrado
+    char *decifrado = malloc(n + 1);
+    if (!decifrado) {
+        printf("Erro de alocacao de memoria.\n");
+        return;
+    }
+
+    // Preenche o texto decifrado parcial
+    for (int i = 0; i < n; i++) {
+        char c = cript[i];
+        if (c >= 'A' && c <= 'Z')
+            decifrado[i] = (chave[c - 'A'] == DESCONHECIDO) ? c : chave[c - 'A'];
+        else
+            decifrado[i] = c;
+    }
+    decifrado[n] = '\0';
+
+    printf("\n=== Estado Atual ===\n");
     printf("Texto Criptografado:\n%s\n", cript);
+
     printf("\nChave Atual:\n");
     printf("CT: ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
     printf("PT: ");
-    // Exibe a chave atual (a substituição de cada letra cifrada 'CT' para a letra plana 'PT')
     for (int i = 0; i < ALFABETO; i++) printf("%c", chave[i]);
+
     printf("\n\nTexto Parcialmente Decifrado:\n");
-    
-    // Exibe o texto parcialmente decifrado, colorindo as letras decifradas
-    int n = (int)strlen(cript);
-    for (int i = 0; i < n; i++) {
-        char c = cript[i];
-        if (c >= 'A' && c <= 'Z') {
-            // Se a chave for conhecida, imprime em verde; senão, em vermelho
-            if (chave[c - 'A'] != DESCONHECIDO)
-                printf("%s%c%s", COR_VERDE, chave[c - 'A'], COR_RESET);
-            else
-                printf("%s%c%s", COR_VERMELHO, c, COR_RESET);
-        } else printf("%c", c); // Não é letra, imprime normal
+
+    int inicio = 0;
+    for (int i = 0; i <= n; i++) {
+
+        // Detecta fim de linha
+        if (cript[i] == '\n' || cript[i] == '\0') {
+
+            //imprime a linha do texto decifrado
+            for (int j = inicio; j < i; j++)
+                putchar(decifrado[j]);
+            putchar('\n');
+
+            //imprime a linha dos '^' alinhados
+            for (int j = inicio; j < i; j++) {
+                char c = cript[j];
+                if (c >= 'A' && c <= 'Z') {
+                    if (chave[c - 'A'] != DESCONHECIDO)
+                        putchar('^');
+                    else
+                        putchar(' ');
+                } else {
+                    putchar(' ');
+                }
+            }
+            putchar('\n');
+
+            inicio = i + 1; // nova linha
+        }
     }
-    printf("\n");
+
+    free(decifrado);
 }
 
 // Realiza a análise de frequência do texto cifrado e sugere correspondências baseadas na frequência padrão
@@ -106,9 +138,7 @@ void analiseFrequencia(const char *txt) {
     
     //exibe a tabela de análise de frequência e as sugestões
     printf("\nAnalise de Frequencia\n");
-    printf("+------------+-----------+--------------+-----------------+\n");
     printf("| Letra CT   | Cont. CT  | Freq CT   | Sugestao PT (F) |\n");
-    printf("+------------+-----------+--------------+-----------------+\n");
     int idx = 0;
     for (int i = 0; i < ALFABETO; i++) {
         if (freq[i].contagem > 0) { // Exibe apenas letras que ocorrem no texto
@@ -118,7 +148,6 @@ void analiseFrequencia(const char *txt) {
             idx++;
         }
     }
-    printf("+------------+-----------+--------------+-----------------+\n");
 }
 
 // Criptografa um arquivo de entrada para um arquivo de saída usando a Cifra de César com 'shift'
@@ -133,12 +162,12 @@ void criptografaArquivo(const char *in, const char *out, int shift) {
     int c;
     while ((c = fgetc(fi)) != EOF) {
         if (c >= 'A' && c <= 'Z') 
-            // Criptografa letras maiúsculas: ((c - 'A' + shift) % 26) + 'A'
+            // Criptografa letras maiúsculas
             c = ((c - 'A' + shift) % 26) + 'A';
         else if (c >= 'a' && c <= 'z') 
             // Converte minúscula para maiúscula e depois criptografa
             c = ((c - 'a' + shift) % 26) + 'A';
-        fputc(c, fo); // Escreve o caractere criptografado/preservado
+        fputc(c, fo); // Escreve o caractere criptografado
     }
     fclose(fi);
     fclose(fo);
@@ -200,15 +229,12 @@ void analiseCorpus12() {
     
     //exibe a tabela de frequência do corpus
     printf("\nAnalise de Frequencia com 12 Arquivos\n");
-    printf("+------------+-----------+--------------+\n");
     printf("| Letra PT   | Contagem  | Freq (%%)     |\n"); 
-    printf("+------------+-----------+--------------+\n");
     for (int i = 0; i < ALFABETO; i++) {
         if (f[i].contagem > 0)
             printf("|    %c      |   %5d   |   %6.2f%%   |\n",
                 f[i].letra, f[i].contagem, f[i].frequencia);
     }
-    printf("+------------+-----------+--------------+\n");
 }
 
 //exporta a chave de decifração final para um arquivo de texto
@@ -218,20 +244,23 @@ void export(const char *chave) {
     FILE *file;
     
     //pede ao usuário o nome do arquivo
-    printf("\nNome para salvar a CHAVE FINAL (sem extensao): ");
+    printf("\nNome para salvar a chave (sem extensao): ");
     if (scanf("%99s", nomeArq) != 1) return;
     
     //cria o nome de arquivo completo 
-    snprintf(caminhoArq, sizeof(caminhoArq), "%s_chave_resultado.txt", nomeArq);
+    snprintf(caminhoArq, sizeof(caminhoArq), "%s_resultado.txt", nomeArq);
     
     // Abre o arquivo para escrita
     file = fopen(caminhoArq, "w");
-    if (!file) { printf("Erro ao criar arquivo.\n"); return; }
+    if (!file) { 
+        printf("Erro ao criar arquivo.\n"); 
+        return; 
+    }
     
     // Escreve a chave no formato CT -> PT
     fprintf(file, "Chave de Criptografia Final:\n");
-    fprintf(file, "CT (Cripto): ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
-    fprintf(file, "PT (Plano) : ");
+    fprintf(file, "CT: ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
+    fprintf(file, "PT: ");
     for (int i = 0; i < ALFABETO; i++) fprintf(file, "%c", chave[i]);
     fprintf(file, "\n");
     
