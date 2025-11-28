@@ -32,9 +32,9 @@ int shiftAndExato(const char *texto, const char *padrao) {
     return ocorrencias;
 }
 
-void realizarCasamentoExato(const char *textoCriptografado, char chave[ALFABETO]) {
+void realizarCasamentoExato(const char *textoCriptografado) {
     char padraoCT[100];
-    printf("\n___Casamento exato de caracteres (Shift-And)___\n");
+    printf("\nCasamento exato de caracteres (Shift-And)\n");
     printf("Busca por padroes no TEXTO CRIPTOGRAFADO\n");
     printf("Digite o trecho CRIPTOGRAFADO (Ex: QWERTY): ");
     if (scanf("%99s", padraoCT) != 1) return;
