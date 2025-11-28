@@ -6,12 +6,6 @@
 
 const char ORDEM_PT[] = "AEOSRINDMUTCLPVQGHBFZJXKYW"; 
 
-typedef struct {
-    char letra;
-    int contagem;
-    double frequencia;
-} EntradaFrequencia;
-
 int comparaEntradasFrequencia(const void *a, const void *b) {
     EntradaFrequencia *entradaA = (EntradaFrequencia *)a;
     EntradaFrequencia *entradaB = (EntradaFrequencia *)b;
@@ -155,36 +149,12 @@ void analiseFrequencia(const char *texto_criptografado, char chave[ALFABETO]) {
         printf("\nNenhum novo mapeamento foi sugerido ou todas as letras ja foram mapeadas.\n");
     }
 }
-void altChave(char *textoCriptografado){
-    char original, mapeada;
-    printf("\nDigite nesta ordem separadoo por espaço:\n");
-    printf("Letra original -> Letra mapeada\n");
-    printf("Exemplo: A S\n");
-    printf("> ");
-    getchar(); // limpando buffer
-    scanf("%c %c", &original, &mapeada);
-    printf("\n");
-    original = toupper(original);
-    mapeada = toupper(mapeada);
 
-    printf("Antes:\n");
-    printf("%s\n", textoCriptografado);
+void export(char *textoCriptografado, char *chave){
+    int tam = strlen(textoCriptografado);
+    char *textoFinal = (char*) malloc(tam + 1);
+    decifraTexto(textoCriptografado, chave, textoFinal);
 
-    // atualizando os valores no texto criptografado
-    int tamTxt = strlen(textoCriptografado);
-    for(int i=0; i<tamTxt; i++){
-        if(textoCriptografado[i] == mapeada){
-            textoCriptografado[i] = original;
-        }
-    }
-
-    printf("Registrado: %c -> %c!\n", original, mapeada);
-
-    printf("Depois:\n");
-    printf("%s\n", textoCriptografado);
-}
-
-void export(char *textoCriptografado){
     char nomeArq[100];
     char caminhoArq[150];
     FILE *file = NULL;
@@ -212,7 +182,7 @@ void export(char *textoCriptografado){
             // caso entre nesta condição o arquivo foi criado com sucesso
 
             // precisamos agora escrever o resultado em file
-            fprintf(file, textoCriptografado);
+            fprintf(file, textoFinal);
             printf("Seu arquivo foi criado e registrado com sucesso!\n");
             fclose(file);
 

@@ -39,15 +39,15 @@ void alteraChave(char chave[ALFABETO]) {
 }
 
 char *criptografia(char *texto){
-    char alph[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    char alph[ALFABETO] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    char cripto[26];
+    char cripto[ALFABETO];
     // definido chave X com valor 3
     int X = 3;
     
     // montando vetor com valores criptografados
-    for(int i=0; i<26; i++){
-        int calculoCifDesc = (i+X)%26;
+    for(int i=0; i<ALFABETO; i++){
+        int calculoCifDesc = (i+X)%ALFABETO;
         cripto[i] = alph[calculoCifDesc];
     }
 
@@ -59,7 +59,7 @@ char *criptografia(char *texto){
     for(int i=0; i<tamTxt; i++){
         int encontrado = 0;
 
-        for(int j=0; j<26; j++){
+        for(int j=0; j<ALFABETO; j++){
             if(texto[i] == alph[j]){
                 // escreve em resultCripto de acordo com o valor do índice correspondente entre alph e cripto
                 resultCripto[posCripto] = cripto[j];
@@ -172,7 +172,7 @@ void menu(char *textoCriptografado){
                 alteraChave(chave_decifracao);
                 break;
             case 6:
-                export(textoCriptografado);
+                export(textoCriptografado, chave_decifracao);
                 break;        
             default:
                 printf("\nOpcao invalida. Tente novamente.\n");
