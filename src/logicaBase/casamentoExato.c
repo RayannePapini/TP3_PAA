@@ -12,7 +12,7 @@ int shiftAndExato(const char *texto, const char *padrao) {
         printf("Erro: Muito longo para Shift-And simples\n");
         return 0;
     }
-    unsigned long R = 0; // registrador de estado (bitset). Um bit setado indica um prefixo do padrao que termina na posicao atual
+    unsigned long R = 0; // registrador de estado, um bit setado indica um prefixo do padrao que termina na posicao atual
     unsigned long mascara[256]; // tabela de mascaras de bits para todos os 256 caracteres possiveis
 
     for (int i = 0; i < 256; i++) { // inicializa a tabela com zeros
