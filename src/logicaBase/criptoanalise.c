@@ -88,19 +88,31 @@ void exibeEstado(const char *cript, const char *chave) {
         // Detecta fim de linha
         if (cript[i] == '\n' || cript[i] == '\0') {
 
-            //imprime a linha do texto decifrado
+            // imprime a linha do texto decifrado
             for (int j = inicio; j < i; j++)
                 putchar(decifrado[j]);
             putchar('\n');
 
-            //imprime a linha dos '^' alinhados
+            // imprime a linha dos '^' alinhados
             for (int j = inicio; j < i; j++) {
                 char c = cript[j];
+
                 if (c >= 'A' && c <= 'Z') {
-                    if (chave[c - 'A'] != DESCONHECIDO)
-                        putchar('^');
-                    else
+
+                    // Só mostra ^ se o usuário acertou a letra da cifra de César 
+                    if (chave[c - 'A'] != DESCONHECIDO) {
+
+                        // letra correta do PT (César: shift 3 para trás)
+                        char correto = ((c - 'A' - 3 + 26) % 26) + 'A';
+
+                        // só marca quando está correto
+                        if (chave[c - 'A'] == correto)
+                            putchar('^');
+                        else
+                            putchar(' '); // errado → não marca
+                    } else {
                         putchar(' ');
+                    }
                 } else {
                     putchar(' ');
                 }
@@ -113,6 +125,7 @@ void exibeEstado(const char *cript, const char *chave) {
 
     free(decifrado);
 }
+
 
 // Realiza a análise de frequência do texto cifrado e sugere correspondências baseadas na frequência padrão
 void analiseFrequencia(const char *txt) {
