@@ -293,17 +293,4 @@ void export(const char *textoCriptografado, const char *chave){
             continue;
         }
     }
-
-    printf("Resultado esperado no arquivo (decifrado):\n");
-    {
-        size_t n = strlen(textoCriptografado);
-        char *decifrado = malloc(n + 1);
-        if (decifrado) {
-            decifraTexto(textoCriptografado, chave, decifrado);
-            printf("%s\n", decifrado);
-            free(decifrado);
-        } else {
-            printf("%s\n", textoCriptografado);
-        }
-    }
 }
