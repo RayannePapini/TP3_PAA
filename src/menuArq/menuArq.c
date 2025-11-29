@@ -5,8 +5,6 @@
 #include <ctype.h>
 #include <time.h>
 
-int SHIFT_GLOBAL = -1;
-
 void alteraChave(char chave[26]) {
     char in[3];
     printf("\nInforme PT->CT (ex: AC): ");
@@ -31,36 +29,47 @@ void alteraChave(char chave[26]) {
 }
 
 char *criptografia(char *txt) {
-    if (SHIFT_GLOBAL == -1) {
-        SHIFT_GLOBAL = 3;
-        criptografaCorpus12(SHIFT_GLOBAL);
+    char alph[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    char cripto[26];
+
+    const int X = 3;
+
+    for(int i=0; i<26; i++){
+        int calculoCifDesc = (i+X)%26;
+        cripto[i] = alph[calculoCifDesc];
     }
 
-    int n = (int)strlen(txt);
-    char *out = malloc(n + 1);
+    int tamTxt = strlen(txt);
+    char *resultCripto = (char*) malloc(tamTxt + 1);
     
-    if (!out) {
+    if (!resultCripto) {
         return NULL;
     }
     
-    int pos = 0;
-    
-    for (int i = 0; i < n; i++) {
+    int posCripto = 0;
+
+    for(int i=0; i<tamTxt; i++){
+        int encontrado = 0;
         char c = txt[i];
-        
-        if (c >= 'A' && c <= 'Z') {
-            out[pos++] = (char)(((c - 'A' + SHIFT_GLOBAL) % 26) + 'A');
-        } 
-        else if (c >= 'a' && c <= 'z') {
-            out[pos++] = (char)(((c - 'a' + SHIFT_GLOBAL) % 26) + 'A');
-        } 
-        else {
-            out[pos++] = c;
+
+        for(int j=0; j<26; j++){
+            if(c == alph[j]){
+                resultCripto[posCripto] = cripto[j];
+                posCripto++;
+                encontrado = 1;
+                break;
+            }
+        }
+
+        if(encontrado == 0){
+            resultCripto[posCripto] = c;
+            posCripto++;
         }
     }
-    
-    out[pos] = '\0';
-    return out;
+
+    resultCripto[posCripto] = '\0';
+    return resultCripto;
 }
 
 char *geraArqCripto() {
@@ -68,7 +77,6 @@ char *geraArqCripto() {
     char caminho[200];
     
     while (1) {
-        // carregando arquivo de acordo com entrada do usuário
         printf("\nDigite o nome do arquivo de entrada para criptografia(sem extensao):\n");
         
         if (scanf("%99s", nome) != 1) {
@@ -90,14 +98,12 @@ char *geraArqCripto() {
             printf("Arquivo invalido.\n");
             continue;
         }
-        
-        // encontrando tamanho do arquivo
+
         fseek(fp, 0, SEEK_END);
         long size = ftell(fp);
-        //volta file pro início para a leitura
         fseek(fp, 0, SEEK_SET);
         
-        char *buffer = malloc(size + 1);        
+        char *buffer = malloc(size + 1);       
         if (!buffer) { 
             fclose(fp); 
             return NULL; 
@@ -109,11 +115,9 @@ char *geraArqCripto() {
             buffer[p++] = (char)toupper(ch);
         }
         
-        // garante que string está fechada
         buffer[p] = '\0';
         fclose(fp);
 
-        // criptografar
         char *cript = criptografia(buffer);
         free(buffer);
         
@@ -135,8 +139,7 @@ void menu(char *texto) {
         printf("5. Alterar chave manualmente\n");
         printf("6. Exportar e sair\n");
         printf("Escolha: ");
-        
-        // lê opção e limpa o buffer
+
         if (scanf("%d", &op) != 1) { 
             while (getchar() != '\n'); 
             continue; 
@@ -149,7 +152,6 @@ void menu(char *texto) {
                 exibeEstado(texto, chave);
                 break;
             case 2: {
-                // opções para 1 ou 12 arquivos
                 int x;
                 printf("\n1. Apenas arquivo\n");
                 printf("2. Usar 12 arquivos\n");
