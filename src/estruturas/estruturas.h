@@ -19,6 +19,7 @@ void decifraTexto(const char *texto_criptografado, const char *chave, char *text
 void analiseFrequencia(const char *texto_criptografado);
 void analiseCorpus12();
 void realizarCasamentoExato(const char *textoCriptografado);
+void realizarCasamentoAproximado(const char *textoCriptografado, const char *chave);
 
 /*Funções para mecher com a chave*/
 void inicializaChave(char chave[ALFABETO]);
