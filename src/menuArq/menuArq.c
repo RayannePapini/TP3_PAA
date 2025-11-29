@@ -181,7 +181,7 @@ void menu(char *texto) {
                 realizarCasamentoExato(texto);
                 break;
             case 4:
-                printf("Indisponivel.\n");
+                realizarCasamentoAproximado(texto, chave);
                 break;
             case 5:
                 alteraChave(chave);
