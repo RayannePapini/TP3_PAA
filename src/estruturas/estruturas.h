@@ -24,7 +24,7 @@ void realizarCasamentoExato(const char *textoCriptografado);
 void inicializaChave(char chave[ALFABETO]);
 void alteraChave(char chave[ALFABETO]);
 void altChave(char *textoCriptografado);
-void export(const char *chave);
+void export(const char *textoCriptografado, const char *chave);
 
 /*Funções da interface*/
 void menu(char *textoCriptografado);

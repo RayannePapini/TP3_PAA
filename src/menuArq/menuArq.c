@@ -68,7 +68,8 @@ char *geraArqCripto() {
     char caminho[200];
     
     while (1) {
-        printf("\nArquivo de entrada (sem extensao): ");
+        // carregando arquivo de acordo com entrada do usuário
+        printf("\nDigite o nome do arquivo de entrada para criptografia(sem extensao):\n");
         
         if (scanf("%99s", nome) != 1) {
             while (getchar() != '\n'){
@@ -90,11 +91,13 @@ char *geraArqCripto() {
             continue;
         }
         
+        // encontrando tamanho do arquivo
         fseek(fp, 0, SEEK_END);
         long size = ftell(fp);
+        //volta file pro início para a leitura
         fseek(fp, 0, SEEK_SET);
-        char *buffer = malloc(size + 1);
         
+        char *buffer = malloc(size + 1);        
         if (!buffer) { 
             fclose(fp); 
             return NULL; 
@@ -106,8 +109,11 @@ char *geraArqCripto() {
             buffer[p++] = (char)toupper(ch);
         }
         
+        // garante que string está fechada
         buffer[p] = '\0';
         fclose(fp);
+
+        // criptografar
         char *cript = criptografia(buffer);
         free(buffer);
         
@@ -130,6 +136,7 @@ void menu(char *texto) {
         printf("6. Exportar e sair\n");
         printf("Escolha: ");
         
+        // lê opção e limpa o buffer
         if (scanf("%d", &op) != 1) { 
             while (getchar() != '\n'); 
             continue; 
@@ -142,6 +149,7 @@ void menu(char *texto) {
                 exibeEstado(texto, chave);
                 break;
             case 2: {
+                // opções para 1 ou 12 arquivos
                 int x;
                 printf("\n1. Apenas arquivo\n");
                 printf("2. Usar 12 arquivos\n");
@@ -178,7 +186,7 @@ void menu(char *texto) {
                 alteraChave(chave);
                 break;
             case 6:
-                export(chave);
+                export(texto, chave);
                 free(texto);
                 return;
             default:

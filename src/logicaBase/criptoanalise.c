@@ -238,32 +238,59 @@ void analiseCorpus12() {
 }
 
 //exporta a chave de decifração final para um arquivo de texto
-void export(const char *chave) {
+void export(const char *textoCriptografado, const char *chave){
     char nomeArq[100];
-    char caminhoArq[200];
-    FILE *file;
-    
-    //pede ao usuário o nome do arquivo
-    printf("\nNome para salvar a chave (sem extensao): ");
-    if (scanf("%99s", nomeArq) != 1) return;
-    
-    //cria o nome de arquivo completo 
-    snprintf(caminhoArq, sizeof(caminhoArq), "%s_resultado.txt", nomeArq);
-    
-    // Abre o arquivo para escrita
-    file = fopen(caminhoArq, "w");
-    if (!file) { 
-        printf("Erro ao criar arquivo.\n"); 
-        return; 
+    char caminhoArq[150];
+    FILE *file = NULL;
+
+    while(1){
+        printf("\nDigite o nome do arquivo(sem extensoes) onde o resultado sera salvo!\n");
+        printf("O arquivo poedrá ser encontrado na no seguinte diretório: >TP3_PAA/testes/resultTestes/nomeArquivo.txt\n");
+        scanf("%s", nomeArq);
+        sprintf(caminhoArq, "testes/resultTestes/%s.txt", nomeArq);
+
+        // abre arquivo no modo leitura para identificar existência no diretório
+        file = fopen(caminhoArq, "r");
+
+        // se arquivo não é nulo isso significa que já existe um arquivo escrito no diretório passado
+        // portanto, devemos escolher outro nome pro arquivo
+        if(file != NULL){
+            fclose(file);
+            printf("Ja existe um arquivo com o nome %s, tente outro nome!\n", nomeArq);
+            continue;
+        }
+
+        // se não existe arquivo podemos abrir no modo leitura
+        file = fopen(caminhoArq, "w");
+        if(file != NULL){
+            // caso entre nesta condição o arquivo foi criado com sucesso
+
+            // escrevemos o texto decifrado no arquivo
+            int tam = strlen(textoCriptografado);
+            char *decifrado = malloc(tam + 1);
+            decifraTexto(textoCriptografado, chave, decifrado);
+            fprintf(file, "%s", decifrado);
+            free(decifrado);
+            printf("Seu arquivo foi criado e registrado com sucesso!\n");
+            fclose(file);
+
+            break;
+        } else{
+            printf("Houve um problema inexperado! Tente novamente\n");
+            continue;
+        }
     }
-    
-    // Escreve a chave no formato CT -> PT
-    fprintf(file, "Chave de Criptografia Final:\n");
-    fprintf(file, "CT: ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
-    fprintf(file, "PT: ");
-    for (int i = 0; i < ALFABETO; i++) fprintf(file, "%c", chave[i]);
-    fprintf(file, "\n");
-    
-    fclose(file);
-    printf("Chave salva em %s\n", caminhoArq);
+
+    printf("Resultado esperado no arquivo (decifrado):\n");
+    {
+        size_t n = strlen(textoCriptografado);
+        char *decifrado = malloc(n + 1);
+        if (decifrado) {
+            decifraTexto(textoCriptografado, chave, decifrado);
+            printf("%s\n", decifrado);
+            free(decifrado);
+        } else {
+            printf("%s\n", textoCriptografado);
+        }
+    }
 }
