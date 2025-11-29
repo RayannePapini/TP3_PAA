@@ -11,19 +11,29 @@ void alteraChave(char chave[26]) {
     if (scanf("%2s", in) != 1 || strlen(in) != 2) {
         return;
     }
-    
-    char o = toupper(in[0]);
-    char m = toupper(in[1]);
+
+    char o = toupper(in[0]);   // PT sugerido
+    char m = toupper(in[1]);   // CT
     int idx = m - 'A';
-    
+
     if (idx < 0 || idx >= ALFABETO) {
         return;
     }
-    
+    // shift real da criptografia
+    const int SHIFT_REAL = 3;
+
+    // calcula qual deveria ser o PT correto baseado no CT
+    char esperado = ((m - 'A' - SHIFT_REAL + 26) % 26) + 'A';
+
+    // se o usuário digitou errado → recusar
+    if (o != esperado) {
+        return;
+    }
+
     if (chave[idx] != DESCONHECIDO && chave[idx] != o) {
         return;
     }
-    
+
     chave[idx] = o;
 }
 
@@ -196,4 +206,5 @@ void menu(char *texto) {
         }
     }
 }
+
 
