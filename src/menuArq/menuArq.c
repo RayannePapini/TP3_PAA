@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
 
 void alteraChave(char chave[26]) {
     char in[3];
@@ -197,3 +196,4 @@ void menu(char *texto) {
         }
     }
 }
+
