@@ -36,7 +36,7 @@ char *criptografia(char *txt) {
 
     for(int i=0; i<26; i++){
         int calculoCifDesc = (i+X)%26;
-        cripto[i] = alph[calculoCifDesc];
+        cripto[i] = alph[calculoCifDesc];    
     }
 
     int tamTxt = strlen(txt);
