@@ -7,25 +7,28 @@
 void alteraChave(char chave[26]) {
     char in[3];
     printf("\nInforme PT->CT (ex: AC): ");
-    
+
     if (scanf("%2s", in) != 1 || strlen(in) != 2) {
         return;
     }
-    
-    char o = toupper(in[0]);
-    char m = toupper(in[1]);
-    int idx = m - 'A';
-    
-    if (idx < 0 || idx >= ALFABETO) {
+
+    char pt = toupper(in[0]);  // plain text
+    char ct = toupper(in[1]);  // cipher text
+
+    int idx = ct - 'A';  // índice da letra cifrada
+
+    // impede index inválido
+    if (idx < 0 || idx >= ALFABETO) return;
+
+    // impede alterar para algo diferente do que já existe
+    if (chave[idx] != DESCONHECIDO && chave[idx] != pt) {
+        printf("Erro: '%c' já está mapeado para '%c'\n", ct, chave[idx]);
         return;
     }
-    
-    if (chave[idx] != DESCONHECIDO && chave[idx] != o) {
-        return;
-    }
-    
-    chave[idx] = o;
+
+    chave[idx] = pt;
 }
+
 
 char *criptografia(char *txt) {
     char alph[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
