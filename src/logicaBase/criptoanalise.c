@@ -80,7 +80,7 @@ void exibeEstado(const char *cript, const char *chave) {
     printf("PT: ");
     for (int i = 0; i < ALFABETO; i++) printf("%c", chave[i]);
 
-    printf("\n\n=== Texto Parcialmente Decifrado ===\n");
+    printf("\n\n=== Texto Parcialmente Decifrado === \n");
 
     int inicio = 0;
     for (int i = 0; i <= n; i++) {
@@ -202,40 +202,53 @@ void analiseCorpus12() {
         "testes/Hysilens_cript.txt","testes/Mydei_cript.txt",
         "testes/Phainon_cript.txt","testes/Tribios_cript.txt"
     };
-    int total[ALFABETO] = {0}, totalL = 0; // Contadores de frequência e total de letras
-    
-    // processa todos os arquivos, acumulando a contagem de letras
+
+    int total[ALFABETO] = {0}, totalL = 0;
+
+    // Conta as letras nos 12 arquivos
     for (int k = 0; k < 12; k++) {
         FILE *fp = fopen(arqs[k], "r");
-        if (!fp) continue; // Pula se não conseguir abrir
+        if (!fp) continue;
         int c;
         while ((c = fgetc(fp)) != EOF) {
-            // Conta apenas letras maiúsculas
-            if (c >= 'A' && c <= 'Z') { total[c - 'A']++; totalL++; }
+            if (c >= 'A' && c <= 'Z') {
+                total[c - 'A']++;
+                totalL++;
+            }
         }
         fclose(fp);
     }
-    
-    //calcula as frequências
+
+    // Preenche estrutura
     EntradaFrequencia f[ALFABETO];
     for (int i = 0; i < ALFABETO; i++) {
         f[i].letra = 'A' + i;
         f[i].contagem = total[i];
         f[i].frequencia = totalL ? (double)total[i] / totalL * 100.0 : 0;
     }
-    
-    //ordena as letras por frequência decrescente
+
+    // Ordena por frequência decrescente
     qsort(f, ALFABETO, sizeof(EntradaFrequencia), comparaEntradasFrequencia);
-    
-    //exibe a tabela de frequência do corpus
+
+    // Exibe com sugestão 
     printf("\nAnalise de Frequencia com 12 Arquivos\n");
-    printf("| Letra PT   | Contagem  | Freq (%%)     |\n"); 
+    printf("| Letra CT | Contagem | Freq (%%)  | Sugestao PT (F) |\n");
+
+    int idx = 0;
     for (int i = 0; i < ALFABETO; i++) {
-        if (f[i].contagem > 0)
-            printf("|    %c      |   %5d   |   %6.2f%%   |\n",
-                f[i].letra, f[i].contagem, f[i].frequencia);
+        if (f[i].contagem > 0) {
+            printf("|    %c     | %7d | %7.2f%% |     %c (%5.2f%%) |\n",
+                f[i].letra,
+                f[i].contagem,
+                f[i].frequencia,
+                TABELA_WIKI[idx].letra,
+                TABELA_WIKI[idx].freq_padrao
+            );
+            idx++;
+        }
     }
 }
+
 
 //exporta a chave de decifração final para um arquivo de texto
 void export(const char *chave) {
